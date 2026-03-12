@@ -1,0 +1,18 @@
+# Disable directory listing
+Options -Indexes
+
+# Set default index file
+DirectoryIndex index.php
+
+# Basic PHP settings
+<IfModule mod_php7.c>
+    php_value upload_max_filesize 64M
+    php_value post_max_size 64M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>
+
+# Simple security rules
+<FilesMatch "^(database\.sql|faculty_workload\.sql|faculty_workload data with all\.sql)$">
+  Require all denied
+</FilesMatch> 

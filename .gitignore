@@ -1,0 +1,13 @@
+# Credentials
+db password keith.txt
+
+# Database backups/SQL if not wanted
+# faculty_workload data with all.sql
+# faculty_workload.sql
+
+# Uploads
+uploads/
+
+# PHP system files
+phpinfo.php
+test-db.php

@@ -1,0 +1,73 @@
+# Disable directory listing
+Options -Indexes
+
+# Set default index file
+DirectoryIndex index.php
+
+# PHP settings for Hostinger
+<IfModule mod_php7.c>
+    php_value upload_max_filesize 64M
+    php_value post_max_size 64M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Ensure HTTPS (Hostinger supports this)
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Block direct access to the includes directory
+    RewriteRule ^includes/ - [F,L]
+
+    # Prevent executing PHP files inside uploads
+    RewriteRule ^uploads/.*\.php$ - [F,L]
+
+    # Block access to sensitive file types
+    RewriteRule \.(sql|ini|log|env|bak|sh)$ - [F,L]
+
+    # Allow access to txt files in the root (needed for verification)
+    RewriteRule ^[^/]+\.txt$ - [L]
+
+    # Preserve session paths for admin and faculty redirects
+    # These rules ensure the redirects in auth.php work properly
+    RewriteRule ^admin/ - [L]
+    RewriteRule ^faculty/ - [L]
+    
+    # Preserve logout functionality
+    RewriteRule ^logout\.php - [L]
+</IfModule>
+
+# Deny access to hidden dotfiles (.env, .git, .htaccess, etc.)
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
+
+# Protect specific files
+<FilesMatch "^(database\.sql|faculty_workload\.sql|faculty_workload data with all\.sql)$">
+  Require all denied
+</FilesMatch>
+
+# Set proper MIME types
+<IfModule mod_mime.c>
+  AddType application/javascript .js
+  AddType text/css .css
+  AddType image/svg+xml .svg
+</IfModule>
+
+# Enable compression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css application/javascript application/json
+</IfModule>
+
+# Set caching headers for static assets
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+</IfModule> 
